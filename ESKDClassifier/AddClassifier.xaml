@@ -1,0 +1,41 @@
+﻿<Window x:Class="ESKDClassifier.AddClassifier"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Добавить" Height="300" Width="400" WindowStartupLocation="CenterScreen" ShowInTaskbar="False">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="auto"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Label Padding="5" Margin="5">Код:</Label>
+            <Label Grid.Row="1" Padding="5" Margin="5">Описание:</Label>
+            <Label Grid.Row="2" Padding="5" Margin="5">Изображение:</Label>
+            <TextBox x:Name="CodeESKD" Grid.Row="0" Grid.Column="1" Margin="3" Height="auto"
+                 VerticalAlignment="Center"></TextBox>
+            <TextBox x:Name="DescESKD" Grid.Row="1" Grid.Column="1" Margin="3" Height="150"
+                 VerticalAlignment="Center" TextWrapping = "Wrap" ></TextBox>
+            <TextBox x:Name="PictureESKD" Grid.Row="2" Grid.Column="1" Margin="3" Height="auto"
+                 VerticalAlignment="Center"></TextBox>
+            <Button Grid.Row="2" Grid.Column="2" Margin="0,0,0,5" Padding="5" Click="BtnAddPicture_Click">Обзор</Button>
+
+        </Grid>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Margin="0,0,0,5" Padding="5" Click="BtnOk_Click">OK</Button>
+            <Button Margin="5,0,5,5" Padding="5" Click="BtnCancel_Click">Cancel</Button>
+        </StackPanel>
+    </Grid>
+    
+  
+</Window>
