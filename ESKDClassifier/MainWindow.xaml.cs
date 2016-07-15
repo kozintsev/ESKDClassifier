@@ -1,25 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-//using System.Linq;
-//using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-//using System.Windows.Documents;
-//using System.Windows.Input;
-//using System.Windows.Media;
-//using System.Windows.Media.Imaging;
-//using System.Windows.Navigation;
-//using System.Windows.Shapes;
-
-using System.Data;
-using System.Xml;
-using System.Xml.Serialization;
 using System.IO;
-using System.Collections.ObjectModel;
-
 using Newtonsoft.Json;
 
 namespace ESKDClassifier
@@ -27,49 +11,22 @@ namespace ESKDClassifier
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
-        public string pathFileXML = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\\ESKDClassifier\\ESKDClassifier.xml";
-        public string pathFileJson = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\\ESKDClassifier\\ESKDClassifier.json";
-        public string DirFromFiles = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\\ESKDClassifier\\Files\\";
+        private readonly string _pathFileJson = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\\ESKDClassifier\\ESKDClassifier.json";
+        private readonly string _dirFromFiles = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\\ESKDClassifier\\Files\\";
+        private readonly List<EskdClass> _classifier;
+        private readonly List<EskdClass> _classList;
 
-
-        ESKDClass eskdClass;
-        List<ESKDClass> Classifier;
-        List<ESKDClass> classList;
-
-        private void Serialization()
-        {
-            ////создаём файл сериализации
-            //FileStream fsout = new FileStream(pathFileXML, FileMode.Create, FileAccess.Write);
-            //XmlSerializer serializerout = new XmlSerializer(typeof(List<ESKDClass>), new Type[] { typeof(ESKDClass) });
-            //serializerout.Serialize(fsout, Classifier);
-            //fsout.Close();
-
-            //string json = JsonConvert.SerializeObject(Classifier);
-
-            File.WriteAllText(pathFileJson, JsonConvert.SerializeObject(Classifier));
-            using (StreamWriter file = File.CreateText(pathFileJson))
-            {
-                JsonSerializer serializer = new JsonSerializer();
-                serializer.Serialize(file, Classifier);
-            }
-
-        }
-
-        //delegate void MyTaskList();
-        //private MyTaskList myDelegateFunc;
+        private EskdClass _eskdClass;
+        private TreeViewItem _selectedItem;
 
         public MainWindow()
         {
             InitializeComponent();
-
-            //myDelegateFunc = new MyTaskList(MyTask);
-
-            Classifier = new List<ESKDClass>();
-            classList = new List<ESKDClass>();
-            classList.Clear();
-
+            _classifier = new List<EskdClass>();
+            _classList = new List<EskdClass>();
+            _classList.Clear();
            
             //ESKDClass root = new ESKDClass();
             //root.CodESKD = "42";
@@ -84,8 +41,6 @@ namespace ESKDClassifier
             //Classifier.Add(root);
             //Classifier.Add(new ESKDClass() { CodESKD = "75", Description = "детали-тела вращения" });
             //Classifier.Add(new ESKDClass() { CodESKD = "74", Description = "детали-не тела вращения" });
-
-            
            
             ////создаём файл сериализации
             //FileStream fsout = new FileStream(pathFileXML, FileMode.Create, FileAccess.Write);
@@ -100,68 +55,67 @@ namespace ESKDClassifier
             
             //fsin.Close();
 
-            if (!File.Exists(pathFileJson))
-            {
-                
+            if (!File.Exists(_pathFileJson))
                 return;
-            }
             
-
-            using (StreamReader file = File.OpenText(pathFileJson))
+            using (var file = File.OpenText(_pathFileJson))
             {
-                JsonSerializer serializer = new JsonSerializer();
-                Classifier = (List<ESKDClass>)serializer.Deserialize(file, typeof(List<ESKDClass>));
+                var serializer = new JsonSerializer();
+                _classifier = (List<EskdClass>)serializer.Deserialize(file, typeof(List<EskdClass>));
             }
 
+            ESKDTree.ItemsSource = _classifier;
+            ESKDListView.ItemsSource = _classList;
 
-            
-            ESKDTree.ItemsSource = Classifier;
-            ESKDListView.ItemsSource = classList;
-
-            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(ESKDListView.ItemsSource);
+            var view = (CollectionView)CollectionViewSource.GetDefaultView(ESKDListView.ItemsSource);
             view.Filter = UserFilter;
             CollectionViewSource.GetDefaultView(ESKDListView.ItemsSource).Refresh();
-
         }
 
-        private TreeViewItem selectedItem = null;
+        private void Serialization()
+        {
+            File.WriteAllText(_pathFileJson, JsonConvert.SerializeObject(_classifier));
+            using (var file = File.CreateText(_pathFileJson))
+            {
+                var serializer = new JsonSerializer();
+                serializer.Serialize(file, _classifier);
+            }
+        }
 
         private bool UserFilter(object item)
         {
             //751112
             //|| ((item as ESKDClass).CodESKD.IndexOf(FindToList.Text, StringComparison.OrdinalIgnoreCase) >= 0)
-            if (String.IsNullOrEmpty(FindToList.Text))
+            if (string.IsNullOrEmpty(FindToList.Text))
                 return true;
-            else
-                return ((item as ESKDClass).CodESKD.IndexOf(FindToList.Text, StringComparison.OrdinalIgnoreCase) >= 0);
+            var eskdClass = item as EskdClass;
+            return eskdClass != null && (eskdClass.CodEskd.IndexOf(FindToList.Text, StringComparison.OrdinalIgnoreCase) >= 0);
         }
 
         private void AddClass_Click(object sender, RoutedEventArgs e)
         {
-            AddClassifier addClass = new AddClassifier(this);            
+            var addClass = new AddClassifier(this);            
             addClass.ShowDialog();
 
-            eskdClass = addClass.GetClassifier();
+            _eskdClass = addClass.GetClassifier();
             if (addClass.Cancel)
                 return;
 
-            if (selectedItem == null)
+            if (_selectedItem == null)
             {
-                Classifier.Add(eskdClass);
+                _classifier.Add(_eskdClass);
             }
             else
             {
-                ESKDClass parentclass = selectedItem.DataContext as ESKDClass;
-                parentclass.eskdViews.Add(eskdClass);
+                var parentclass = _selectedItem.DataContext as EskdClass;
+                if (parentclass != null) 
+                    parentclass.EskdViews.Add(_eskdClass);
             }
             //ESKDTree.Items.Refresh();
-            if (selectedItem != null)
-                selectedItem.Items.Refresh();
+            if (_selectedItem != null)
+                _selectedItem.Items.Refresh();
             //selectedItem.IsExpanded = true;
-
             Serialization();
-
-            
         }
 
         private void DelClass_Click(object sender, RoutedEventArgs e)
@@ -170,55 +124,25 @@ namespace ESKDClassifier
         }
 
 
-        //void MyTask()
-        //{
-        //    for (int i = 0; i < childClasses.Count; i++)
-        //    {
-        //        childClasses[i].FullPathPictures = DirFromFiles + childClasses[i].PathPicture;
-        //        classList.Add(childClasses[i]);
-        //    }
-        //    ESKDListView.Items.Refresh();  
-        //}
-
-        //void MyTask()
-        //{
-        //    ESKDListView.Items.Refresh();
-        //}
-
-        //void MyTask2()
-        //{
-        //    ESKDListView.Dispatcher.BeginInvoke(myDelegateFunc);
-        //}
-
-
-
         private void ESKDTree_Selected_Item(object sender, RoutedEventArgs e)
         {
             var item = e.OriginalSource as TreeViewItem;
-            if (item != null)
+            if (item == null) return;
+            _classList.Clear();
+            var selectedClass = item.DataContext as EskdClass;
+            if (selectedClass != null)
             {
-                classList.Clear();
-                ESKDClass selectedClass = item.DataContext as ESKDClass;
-                ObservableCollection<ESKDClass> childClasses = selectedClass.eskdViews;
-
-                if (selectedClass != null)
-                    txtBxCode.Text = selectedClass.CodESKD;
-
-                //Task task = new Task(MyTask2);
-
-                for (int i = 0; i < childClasses.Count; i++)
+                var childClasses = selectedClass.EskdViews;
+                txtBxCode.Text = selectedClass.CodEskd;
+                foreach (var eskdClass in childClasses)
                 {
-                    childClasses[i].FullPathPictures = DirFromFiles + childClasses[i].PathPicture;
-                    classList.Add(childClasses[i]);
+                    eskdClass.FullPathPictures = _dirFromFiles + eskdClass.PathPicture;
+                    _classList.Add(eskdClass);
                 }
-
-                //task.Start();
-
-                //ESKDListView.Dispatcher.BeginInvoke(myDelegateFunc);
-                ESKDListView.Items.Refresh();
-                CollectionViewSource.GetDefaultView(ESKDListView.ItemsSource).Refresh();
-                selectedItem = item;
             }
+            ESKDListView.Items.Refresh();
+            CollectionViewSource.GetDefaultView(ESKDListView.ItemsSource).Refresh();
+            _selectedItem = item;
         }
 
         private void ESKDClassifier_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -229,13 +153,11 @@ namespace ESKDClassifier
 
         private void ESKDListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ListView lv = e.OriginalSource as ListView;
-            if (lv != null)
-            {
-                ESKDClass lvi = lv.SelectedItem as ESKDClass;
-                if (lvi != null)
-                    txtBxCode.Text = lvi.CodESKD;
-            }
+            var lv = e.OriginalSource as ListView;
+            if (lv == null) return;
+            var lvi = lv.SelectedItem as EskdClass;
+            if (lvi != null)
+                txtBxCode.Text = lvi.CodEskd;
         }
 
         private void FindTree_TextChanged(object sender, TextChangedEventArgs e)

@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-
 using System.Collections.ObjectModel;
-using System.Windows.Controls;
 
 namespace ESKDClassifier
     //Класс:
@@ -11,29 +8,27 @@ namespace ESKDClassifier
     //74 - детали-не тела вращения
 {
     [Serializable]
-    public class ESKDClass
+    public class EskdClass
     {
-        public ESKDClass() 
+        public EskdClass() 
         {
-            this.eskdViews = new ObservableCollection<ESKDClass>();
+            EskdViews = new ObservableCollection<EskdClass>();
         }
 
-        public ObservableCollection<ESKDClass> eskdViews { get; set; }
+        public ObservableCollection<EskdClass> EskdViews { get; set; }
 
-        public string CodESKD
+        public string CodEskd
         {
             get;
             set;
         }
 
-        private string description;
+        private string _description;
         public string Description
         {
-            get { return description; }
-            set {description = value; }
+            get { return _description; }
+            set {_description = value; }
         }
-
-        //public bool view = false;
 
         public string PathPicture
         {
@@ -41,25 +36,21 @@ namespace ESKDClassifier
             set;
         }
         [NonSerialized]
-        private string fullPathPictures;
+        private string _fullPathPictures;
         public string FullPathPictures
         {
-            get { return fullPathPictures; }
-            set { fullPathPictures = value; }
+            get { return _fullPathPictures; }
+            set { _fullPathPictures = value; }
         }
 
         [NonSerialized]
-        private string hyphen;
+        private string _hyphen;
         public string Hyphen
         {
-            get 
+            get
             {
-                if (String.IsNullOrEmpty(description))
-                    hyphen = "";
-                else
-                    hyphen = " - ";
-
-                return hyphen;
+                _hyphen = string.IsNullOrEmpty(_description) ? "" : " - ";
+                return _hyphen;
             }
         }
 
@@ -79,9 +70,9 @@ namespace ESKDClassifier
     // Подгруппа
 
     //Вид
-    public class ESKDView
+    public class EskdView
     {
-        public string CodESKD
+        public string CodEskd
         {
             get;
             set;

@@ -10,7 +10,7 @@ namespace ESKDClassifier
 {
     public class ClassListGen
     {
-        ObservableCollection<ESKDClass> childClasses;
+        ObservableCollection<EskdClass> _childClasses;
 
         ClassListGen()
         {

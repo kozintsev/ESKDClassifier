@@ -1,16 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-//using System.Linq;
-using System.Text;
-//using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-//using System.Windows.Data;
-//using System.Windows.Documents;
-//using System.Windows.Input;
-//using System.Windows.Media;
-//using System.Windows.Media.Imaging;
-//using System.Windows.Shapes;
 
 using System.IO;
 
@@ -19,21 +8,21 @@ namespace ESKDClassifier
     /// <summary>
     /// Interaction logic for AddClassifier.xaml
     /// </summary>
-    public partial class AddClassifier : Window
+    public partial class AddClassifier
     {
         public AddClassifier(Window win)
         {
             InitializeComponent();
-            this.Owner = win;
+            Owner = win;
         }
 
-        private string filename = string.Empty;
+        private string _filename = string.Empty;
 
-        private ESKDClass classifier;
+        private EskdClass _classifier;
 
-        public ESKDClass GetClassifier()
+        public EskdClass GetClassifier()
         {
-            return classifier;
+            return _classifier;
         }
 
         public bool Cancel = true;
@@ -42,26 +31,28 @@ namespace ESKDClassifier
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {
             Cancel = true;
-            this.Close();
+            Close();
         }
 
         private void BtnOk_Click(object sender, RoutedEventArgs e)
         {
             // Блок проперок
 
-            classifier = new ESKDClass();
-            classifier.CodESKD = this.CodeESKD.Text;
-            classifier.Description = this.DescESKD.Text;
+            _classifier = new EskdClass
+            {
+                CodEskd = CodeESKD.Text,
+                Description = DescESKD.Text
+            };
 
             //переименовать файл 
             // скопировать в ESKDClassifier\Files\
-            string newshortname = Guid.NewGuid().ToString();
-            string newfilename = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "\\ESKDClassifier\\Files\\" + newshortname;
-            classifier.PathPicture = newshortname;
+            var newShortName = Guid.NewGuid().ToString();
+            var newFileName = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "\\ESKDClassifier\\Files\\" + newShortName;
+            _classifier.PathPicture = newShortName;
 
             try
             {                
-                File.Copy(filename, newfilename);
+                File.Copy(_filename, newFileName);
             }
             catch(Exception ex)
             {
@@ -71,29 +62,21 @@ namespace ESKDClassifier
             }                     
                      
             Cancel = false;
-            this.Close();
+            Close();
         }
 
 
         private void BtnAddPicture_Click(object sender, RoutedEventArgs e)
         {
-            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
-
-            // Set filter for file extension and default file extension 
-            dlg.DefaultExt = ".png";
-            dlg.Filter = "PNG Files (*.png)|*.png";
-
-            // Display OpenFileDialog by calling ShowDialog method 
-            Nullable<bool> result = dlg.ShowDialog();
-
-
-            // Get the selected file name and display in a TextBox 
-            if (result == true)
+            var dlg = new Microsoft.Win32.OpenFileDialog
             {
-                // Open document 
-                filename = dlg.FileName;
-                PictureESKD.Text = filename;
-            }
+                DefaultExt = ".png",
+                Filter = "PNG Files (*.png)|*.png"
+            };
+            var result = dlg.ShowDialog();
+            if (result != true) return;
+            _filename = dlg.FileName;
+            PictureESKD.Text = _filename;
         }
     }
 }
