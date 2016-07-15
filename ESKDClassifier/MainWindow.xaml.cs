@@ -111,10 +111,8 @@ namespace ESKDClassifier
                 if (parentclass != null) 
                     parentclass.EskdViews.Add(_eskdClass);
             }
-            //ESKDTree.Items.Refresh();
             if (_selectedItem != null)
                 _selectedItem.Items.Refresh();
-            //selectedItem.IsExpanded = true;
             Serialization();
         }
 
@@ -122,7 +120,6 @@ namespace ESKDClassifier
         {
 
         }
-
 
         private void ESKDTree_Selected_Item(object sender, RoutedEventArgs e)
         {
