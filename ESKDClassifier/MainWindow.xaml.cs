@@ -27,7 +27,7 @@ namespace ESKDClassifier
             _classifier = new List<EskdClass>();
             _classList = new List<EskdClass>();
             _classList.Clear();
-           
+            #region For test
             //ESKDClass root = new ESKDClass();
             //root.CodESKD = "42";
             //root.Description = "устройства и системы контроля и регулирования парамметрами технолоогического процесса";
@@ -41,22 +41,12 @@ namespace ESKDClassifier
             //Classifier.Add(root);
             //Classifier.Add(new ESKDClass() { CodESKD = "75", Description = "детали-тела вращения" });
             //Classifier.Add(new ESKDClass() { CodESKD = "74", Description = "детали-не тела вращения" });
-           
-            ////создаём файл сериализации
-            //FileStream fsout = new FileStream(pathFileXML, FileMode.Create, FileAccess.Write);
-            //XmlSerializer serializerout = new XmlSerializer(typeof(List<ESKDClass>), new Type[] { typeof(ESKDClass) });
-            //serializerout.Serialize(fsout, Classifier);
-            //fsout.Close();
-
-            //загрузка данных
-            //FileStream fsin = new FileStream(pathFileXML, FileMode.Open, FileAccess.Read);
-            //XmlSerializer serializerin = new XmlSerializer(typeof(List<ESKDClass>), new Type[] { typeof(ESKDClass) });
-            //Classifier = (List<ESKDClass>)serializerin.Deserialize(fsin);
-            
-            //fsin.Close();
-
+            #endregion
             if (!File.Exists(_pathFileJson))
+            {
+                //todo: нужно создавать файл или выдать сообщение или диалог для подклчение файлов с данными
                 return;
+            }
             
             using (var file = File.OpenText(_pathFileJson))
             {
@@ -130,7 +120,8 @@ namespace ESKDClassifier
             if (selectedClass != null)
             {
                 var childClasses = selectedClass.EskdViews;
-                txtBxCode.Text = selectedClass.CodEskd;
+                TxtBxCode.Text = selectedClass.CodEskd;
+                TxtDescription.Text = selectedClass.Description;
                 foreach (var eskdClass in childClasses)
                 {
                     eskdClass.FullPathPictures = _dirFromFiles + eskdClass.PathPicture;
@@ -154,7 +145,10 @@ namespace ESKDClassifier
             if (lv == null) return;
             var lvi = lv.SelectedItem as EskdClass;
             if (lvi != null)
-                txtBxCode.Text = lvi.CodEskd;
+            {
+                TxtBxCode.Text = lvi.CodEskd;
+                TxtDescription.Text = lvi.Description;
+            }
         }
 
         private void FindTree_TextChanged(object sender, TextChangedEventArgs e)

@@ -12,8 +12,9 @@
                 <Button x:Name="DelClass" Content="Удалить" Height="39" VerticalAlignment="Top" Click="DelClass_Click"/>
             </ToolBar>
             <StatusBar DockPanel.Dock="Bottom" Height="54" Margin="0,0,10,0" VerticalAlignment="Bottom">
-                <Label Name = "labelInfoForUser" Content="Готово!"/>
-                <TextBox Name= "txtBxCode" Width="90" IsReadOnly="True"/>
+                <Label Name = "LabelInfoForUser" Content="Готово!"/>
+                <TextBox Name= "TxtBxCode" Width="90" IsReadOnly="True"/>
+                <TextBox Name= "TxtDescription" IsReadOnly="True"/>
             </StatusBar>
             <Grid>
                 <Grid.RowDefinitions>
@@ -31,24 +32,14 @@
                             <StackPanel Orientation="Horizontal">
                                 <Image Source="Images/green.png" Margin="0,0,5,0" />
                                 <TextBlock Text="{Binding CodEskd}" />
-                                <!-- <TextBlock Text=" - "/> -->
                                 <TextBlock Text="{Binding Hyphen}"/>
                                 <TextBlock Text="{Binding Description}" />
                             </StackPanel>
                         </HierarchicalDataTemplate>
-                        <!--
-                        <DataTemplate DataType="{x:Type self:ESKDView}">
-                            <StackPanel Orientation="Horizontal">
-                                <Image Source="Images/green.png" Margin="0,0,5,0" />
-                                <TextBlock Text="{Binding CodESKD}" />
-                            </StackPanel>
-                        </DataTemplate>
-                         -->
                     </TreeView.Resources>
                 </TreeView>
 
-                <ListView Grid.Column="2" Name="ESKDListView" Width="auto" ItemsSource="{Binding ESKDClass, IsAsync=True}" SelectionChanged="ESKDListView_SelectionChanged">
-              <!-- temsSource="{Binding ElementName=ESKDClassifier, Path=ESKDList}" -->
+                <ListView Grid.Row="0" Grid.Column="2" Name="ESKDListView" Width="auto" ItemsSource="{Binding ESKDClass, IsAsync=True}" SelectionChanged="ESKDListView_SelectionChanged">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Width="150" VerticalAlignment="Top">
@@ -57,24 +48,8 @@
                             </StackPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>
-                    <!--
-                    <ListView.View>
-                        <GridView>
-                            <GridViewColumn Header="Код" Width="100" DisplayMemberBinding="{Binding CodESKD}" />
-                            <GridViewColumn Header="Изображение" Width="150">
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Grid>
-                                            <Image Source="{Binding FullPathPictures}" />
-                                        </Grid>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                        </GridView>
-                    </ListView.View>
-                    -->
                 </ListView>
-                <StackPanel Grid.Row="1" Orientation="Horizontal">
+                <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
                     <Label Content="Поиск:"></Label>
                     <TextBox Name="FindToTree" Width="250" Height="28" Text="" TextChanged="FindTree_TextChanged" />
                 </StackPanel>
@@ -85,12 +60,6 @@
                 <GridSplitter Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Width="5"
                       VerticalAlignment="Stretch" HorizontalAlignment="Center"/>
             </Grid>
-            
- 
-                
-
         </DockPanel>
-
-
     </Grid>
 </Window>
