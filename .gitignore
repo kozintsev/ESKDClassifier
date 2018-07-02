@@ -229,3 +229,8 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+*.lock
+*.ide
+*.ide-shm
+.vs/ESKDClassifier/DesignTimeBuild/.dtbcache
+*.ide-wal

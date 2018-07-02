@@ -23,11 +23,10 @@ namespace ESKDClassifier
             set;
         }
 
-        private string _description;
         public string Description
         {
-            get { return _description; }
-            set {_description = value; }
+            get;
+            set;
         }
 
         public string PathPicture
@@ -39,8 +38,8 @@ namespace ESKDClassifier
         private string _fullPathPictures;
         public string FullPathPictures
         {
-            get { return _fullPathPictures; }
-            set { _fullPathPictures = value; }
+            get => _fullPathPictures;
+            set => _fullPathPictures = value;
         }
 
         [NonSerialized]
@@ -49,33 +48,11 @@ namespace ESKDClassifier
         {
             get
             {
-                _hyphen = string.IsNullOrEmpty(_description) ? "" : " - ";
+                _hyphen = string.IsNullOrEmpty(Description) ? "" : " - ";
                 return _hyphen;
             }
         }
 
     }
-    // под класс
-    //public class SubClass : Classifier
-    //{
-    //    public string Name
-    //    {
-    //        get;
-    //        set;
-    //    }
-    //}
-    //Группа
 
-
-    // Подгруппа
-
-    //Вид
-    public class EskdView
-    {
-        public string CodEskd
-        {
-            get;
-            set;
-        }
-    }
 }
