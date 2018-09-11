@@ -78,8 +78,7 @@ namespace ESKDClassifier
             //|| ((item as ESKDClass).CodESKD.IndexOf(FindToList.Text, StringComparison.OrdinalIgnoreCase) >= 0)
             if (string.IsNullOrEmpty(FindToList.Text))
                 return true;
-            var eskdClass = item as EskdClass;
-            return eskdClass != null && (eskdClass.CodEskd.IndexOf(FindToList.Text, StringComparison.OrdinalIgnoreCase) >= 0);
+            return item is EskdClass eskdClass && (eskdClass.CodEskd.IndexOf(FindToList.Text, StringComparison.OrdinalIgnoreCase) >= 0);
         }
 
         private void AddClass_Click(object sender, RoutedEventArgs e)
@@ -98,11 +97,10 @@ namespace ESKDClassifier
             else
             {
                 var parentclass = _selectedItem.DataContext as EskdClass;
-                if (parentclass != null) 
-                    parentclass.EskdViews.Add(_eskdClass);
+                parentclass?.EskdViews.Add(_eskdClass);
             }
-            if (_selectedItem != null)
-                _selectedItem.Items.Refresh();
+
+            _selectedItem?.Items.Refresh();
             Serialization();
         }
 
@@ -113,11 +111,9 @@ namespace ESKDClassifier
 
         private void ESKDTree_Selected_Item(object sender, RoutedEventArgs e)
         {
-            var item = e.OriginalSource as TreeViewItem;
-            if (item == null) return;
+            if (!(e.OriginalSource is TreeViewItem item)) return;
             _classList.Clear();
-            var selectedClass = item.DataContext as EskdClass;
-            if (selectedClass != null)
+            if (item.DataContext is EskdClass selectedClass)
             {
                 var childClasses = selectedClass.EskdViews;
                 TxtBxCode.Text = selectedClass.CodEskd;
@@ -142,13 +138,9 @@ namespace ESKDClassifier
         private void ESKDListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var lv = e.OriginalSource as ListView;
-            if (lv == null) return;
-            var lvi = lv.SelectedItem as EskdClass;
-            if (lvi != null)
-            {
-                TxtBxCode.Text = lvi.CodEskd;
-                TxtDescription.Text = lvi.Description;
-            }
+            if (!(lv?.SelectedItem is EskdClass lvi)) return;
+            TxtBxCode.Text = lvi.CodEskd;
+            TxtDescription.Text = lvi.Description;
         }
 
         private void FindTree_TextChanged(object sender, TextChangedEventArgs e)
